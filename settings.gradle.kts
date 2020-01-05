@@ -1,5 +1,7 @@
 rootProject.name = "Brahma"
 
+includeBuild("kaeron")
+
 val kotlin_version: String by settings
 
 pluginManagement {

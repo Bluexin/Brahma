@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Arnaud 'Bluexin' Solé
+ * Copyright (C) 2020 Arnaud 'Bluexin' Solé
  *
  * This file is part of Brahma.
  *
@@ -19,9 +19,12 @@
 
 package be.bluexin.brahma
 
+import be.bluexin.kaeron.AeronConfig
+import be.bluexin.kaeron.aeronConsumer
+import be.bluexin.kaeron.aeronProducer
 import com.artemis.BaseEntitySystem
 import com.artemis.ComponentMapper
-import com.artemis.annotations.Exclude
+import com.artemis.annotations.All
 import com.artemis.io.SaveFileFormat
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
@@ -29,11 +32,13 @@ import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.readValue
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.map
-import kotlinx.coroutines.channels.mapNotNull
-import java.io.File
+import io.aeron.Aeron
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.*
+import mu.KotlinLogging
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import kotlin.coroutines.coroutineContext
 import kotlin.random.Random
 
 private val WORKER_ID = Random.nextInt() // TODO: this is probably not the right place to set it
@@ -83,22 +88,68 @@ class UpdateDeserializer : JsonDeserializer<Update<*>?>() {
     }
 }
 
-@Exclude(NetworkSynced::class)
+@All
 class NetworkingSenderSystem : BaseEntitySystem() {
-    private lateinit var mSent: ComponentMapper<NetworkSynced>
+    private val logger = KotlinLogging.logger {}
+
+    private lateinit var writer: SendChannel<ByteArray>
+    private lateinit var connection: Job
+    private lateinit var aeron: AeronConfig
+
+    private lateinit var mSent: ComponentMapper<SerializedComponent>
 
     override fun processSystem() {
         val actives = subscription.entities
-        val ms = System.currentTimeMillis()
+        if (actives.isEmpty) return
+
         actives.data.forEach {
-            val ts = mSent.create(it)
-            ts.timeStamp = ms
+
         }
-        val dir = File("tmp").apply { mkdirs() }
-        File(dir, "tmp-$ms.json").outputStream().use {
-            serializationManager.save(it, SaveFileFormat(actives))
-            it.flush()
+
+//        val ms = System.currentTimeMillis()
+        /*actives.data.forEach {
+//            val ts = mSent.create(it)
+//            ts.timeStamp = ms
+        }*/
+
+        val os = ByteArrayOutputStream()
+        serializationManager.save(os, SaveFileFormat(actives))
+        os.flush()
+        writer.offer(os.toByteArray())
+    }
+
+    override fun initialize() {
+        super.initialize()
+
+        runBlocking { connectAeron() }
+    }
+
+    /**
+     * Connects the store to the Aeron server.
+     */
+    @UseExperimental(ExperimentalCoroutinesApi::class)
+    suspend fun connectAeron() {
+        aeron = AeronConfig(
+            client = Aeron.connect(
+                Aeron.Context()
+                    .errorHandler { logger.warn(it) { "Aeron error" } }
+                    .availableImageHandler { logger.info { "Aeron is available" } }
+                    .unavailableImageHandler { logger.info { "Aeron went down" } }
+            ),
+            url = "aeron:udp?endpoint=localhost:40123", // TODO: config
+            stream = 10
+        )
+        connection = Job()
+        with(CoroutineScope(coroutineContext + connection)) {
+            val channel = Channel<ByteArray>(Channel.UNLIMITED)
+            writer = channel
+            launch(Dispatchers.IO) {
+                for (update in aeronConsumer(aeron)) {
+                    serializationManager.load(ByteArrayInputStream(update), SaveFileFormat::class.java)
+                }
+            }
+            aeronProducer(aeron, channel)
+            Unit
         }
-        //TODO: actually send over the network instead of storing to file
     }
 }

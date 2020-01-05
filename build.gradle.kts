@@ -16,11 +16,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(coroutine("jdk8"))
 
-    implementation(aeron("client"))
-    implementation(aeron("cluster"))
-    implementation(aeron("driver"))
-    implementation(aeron("agent"))
-    implementation("uk.co.real-logic", "sbe-tool", version("sbe"))
+    implementation("be.bluexin:kaeron")
 
     implementation("it.unimi.dsi", "fastutil", version("fastutil"))
 
@@ -57,6 +53,3 @@ fun Project.version(name: String) = extra.properties["${name}_version"] as? Stri
 
 fun Project.coroutine(module: String): Any =
     "org.jetbrains.kotlinx:kotlinx-coroutines-$module:${version("coroutines")}"
-
-fun Project.aeron(module: String): Any =
-    "io.aeron:aeron-$module:${version("aeron")}"
