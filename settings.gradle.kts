@@ -1,6 +1,10 @@
 rootProject.name = "Brahma"
 
-includeBuild("kaeron")
+includeBuild("kaeron") {
+    dependencySubstitution {
+        substitute(module("be.bluexin:kaeron")).with(project(":"))
+    }
+}
 
 val kotlin_version: String by settings
 

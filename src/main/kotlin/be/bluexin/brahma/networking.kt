@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Arnaud 'Bluexin' Solé
+ * Copyright (C) 2019-2020 Arnaud 'Bluexin' Solé
  *
  * This file is part of Brahma.
  *

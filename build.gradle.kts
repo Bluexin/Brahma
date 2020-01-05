@@ -45,6 +45,10 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+tasks.withType<AbstractArchiveTask> {
+    archiveBaseName.convention(provider { project.name.toLowerCase() })
+}
+
 noArg {
     annotation("be.bluexin.brahma.Noarg")
 }

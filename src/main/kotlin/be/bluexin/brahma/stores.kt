@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Arnaud 'Bluexin' Solé
+ * Copyright (C) 2019-2020 Arnaud 'Bluexin' Solé
  *
  * This file is part of Brahma.
  *
@@ -19,6 +19,9 @@
 
 package be.bluexin.brahma
 
+import be.bluexin.kaeron.AeronConfig
+import be.bluexin.kaeron.aeronConsumer
+import be.bluexin.kaeron.aeronProducer
 import io.aeron.Aeron
 import it.unimi.dsi.fastutil.ints.Int2ReferenceMap
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap
