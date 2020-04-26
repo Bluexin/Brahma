@@ -17,7 +17,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(coroutine("jdk8"))
 
-    implementation("be.bluexin:kaeron")
+    implementation("be.bluexin:kaeron:1.0-SNAPSHOT")
 
     implementation("it.unimi.dsi", "fastutil", version("fastutil"))
 
