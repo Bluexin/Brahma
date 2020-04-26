@@ -20,6 +20,7 @@
 package be.bluexin.brahma
 
 import com.artemis.Component
+import com.artemis.ComponentMapper
+import com.artemis.World
 
-@Noarg
-data class NetworkSynced(var timeStamp: Long) : Component()
+inline fun <reified T : Component> World.getMapper(): ComponentMapper<T> = this.getMapper(T::class.java)

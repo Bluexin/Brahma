@@ -19,6 +19,8 @@
 
 package be.bluexin.brahma
 
-@Deprecated("Use Artemis")
-interface Value
-// TODO: ByteArray serde
+/**
+ * Instructs the Kotlin compiler to generate a no-arg constructor.
+ * This is required on Component data classes.
+ */
+annotation class Noarg

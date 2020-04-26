@@ -19,15 +19,34 @@
 
 package be.bluexin.brahma
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.artemis.Component
+import com.artemis.annotations.Transient
+import java.io.DataInput
+import java.io.DataOutput
+import java.io.IOException
 
-val JSON = jacksonObjectMapper().apply {
-    this.setVisibility(
-        this.serializationConfig.defaultVisibilityChecker
-            .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
-            .withGetterVisibility(JsonAutoDetect.Visibility.NONE)
-            .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
-            .withCreatorVisibility(JsonAutoDetect.Visibility.NONE)
-    )
+// TODO: delta updates
+@Transient
+abstract class SerializedComponent : Component() {
+    fun clean() {
+        dirty = false
+    }
+
+    fun dirty() {
+        dirty = true
+    }
+
+    var dirty = true
+
+    @Throws(IOException::class)
+    abstract fun serializeTo(outputStream: DataOutput)
+
+    @Throws(IOException::class)
+    abstract fun deserializeFrom(inputStream: DataInput)
+}
+
+fun <T : SerializedComponent> T.read(buffer: DataInput): T {
+    this.deserializeFrom(buffer)
+    this.clean()
+    return this
 }

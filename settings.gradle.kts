@@ -6,9 +6,8 @@ includeBuild("kaeron") {
     }
 }
 
-val kotlin_version: String by settings
-
 pluginManagement {
+    val kotlin_version: String by settings
     resolutionStrategy {
         eachPlugin {
             when (requested.id.namespace) {

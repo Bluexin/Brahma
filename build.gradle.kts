@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    `maven-publish`
     kotlin("jvm")
     kotlin("plugin.noarg")
 }
@@ -20,7 +21,7 @@ dependencies {
 
     implementation("it.unimi.dsi", "fastutil", version("fastutil"))
 
-    implementation("net.onedaybeard.artemis", "artemis-odb", version("artemis"))
+    api("net.onedaybeard.artemis", "artemis-odb", version("artemis"))
     implementation("net.onedaybeard.artemis", "artemis-odb-serializer-kryo", version("artemis"))
     implementation("net.onedaybeard.artemis", "artemis-odb-serializer-json", version("artemis"))
 
@@ -31,6 +32,11 @@ dependencies {
     implementation("org.slf4j", "slf4j-api", version("slf4j"))
     implementation("io.github.microutils", "kotlin-logging", version("klog"))
     runtimeOnly("ch.qos.logback", "logback-classic", version("logback"))
+
+    // Testing
+    testImplementation("org.junit.jupiter", "junit-jupiter-api", version("junit"))
+    testImplementation("org.junit.jupiter", "junit-jupiter-params", version("junit"))
+    testRuntimeOnly("org.junit.jupiter", "junit-jupiter-engine", version("junit"))
 }
 
 tasks.wrapper {
@@ -40,6 +46,7 @@ tasks.wrapper {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         jvmTarget = "1.8"
+        javaParameters = true
         @Suppress("SuspiciousCollectionReassignment")
         freeCompilerArgs += listOf("-Xuse-experimental=kotlin.Experimental", "-XXLanguage:+InlineClasses")
     }
@@ -49,9 +56,43 @@ tasks.withType<AbstractArchiveTask> {
     archiveBaseName.convention(provider { project.name.toLowerCase() })
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
+java {
+    withSourcesJar()
+}
+
 noArg {
     annotation("be.bluexin.brahma.Noarg")
 }
+
+publishing {
+    publications.create<MavenPublication>("publication") {
+        from(components["java"])
+        this.artifactId = rootProject.name.toLowerCase()
+    }
+
+    repositories {
+        val mavenPassword = if (hasProp("local")) null else prop("sbxMavenPassword")
+        maven {
+            url =
+                uri(if (mavenPassword != null) "sftp://maven.sandboxpowered.org:22/sbxmvn/" else "file://$buildDir/repo")
+            if (mavenPassword != null) {
+                credentials(PasswordCredentials::class.java) {
+                    username = prop("sbxMavenUser")
+                    password = mavenPassword
+                }
+            }
+        }
+
+    }
+}
+
+fun Project.hasProp(name: String): Boolean = name in project.properties
+
+fun Project.prop(name: String): String? = project.properties[name] as? String
 
 fun Project.version(name: String) = extra.properties["${name}_version"] as? String
 
