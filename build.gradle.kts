@@ -21,6 +21,7 @@ dependencies {
 
     implementation("it.unimi.dsi", "fastutil", version("fastutil"))
 
+    api("org.jetbrains", "annotations", "13.0")
     api("net.onedaybeard.artemis", "artemis-odb", version("artemis"))
     implementation("net.onedaybeard.artemis", "artemis-odb-serializer-kryo", version("artemis"))
     implementation("net.onedaybeard.artemis", "artemis-odb-serializer-json", version("artemis"))
