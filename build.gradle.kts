@@ -25,6 +25,10 @@ dependencies {
     api("net.onedaybeard.artemis", "artemis-odb", version("artemis"))
     implementation("net.onedaybeard.artemis", "artemis-odb-serializer-kryo", version("artemis"))
     implementation("net.onedaybeard.artemis", "artemis-odb-serializer-json", version("artemis"))
+    api(artemisContrib("core"))
+    api(artemisContrib("eventbus"))
+    api(artemisContrib("plugin-singleton"))
+    api(artemisContrib("plugin-operations"))
 
     implementation("com.github.javafaker", "javafaker", version("javafaker"))
     implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", version("jackson"))
@@ -97,5 +101,7 @@ fun Project.prop(name: String): String? = project.properties[name] as? String
 
 fun Project.version(name: String) = extra.properties["${name}_version"] as? String
 
-fun Project.coroutine(module: String): Any =
-    "org.jetbrains.kotlinx:kotlinx-coroutines-$module:${version("coroutines")}"
+fun Project.coroutine(module: String) = "org.jetbrains.kotlinx:kotlinx-coroutines-$module:${version("coroutines")}"
+
+fun Project.artemisContrib(module: String) =
+    "net.mostlyoriginal.artemis-odb:contrib-$module:${version("artemis_contrib")}"
