@@ -4,6 +4,8 @@ plugins {
     `maven-publish`
     kotlin("jvm")
     kotlin("plugin.noarg")
+    idea
+    id("be.bluexin.brahma-generator") version "1.0-SNAPSHOT"
 }
 
 group = "be.bluexin"
@@ -42,6 +44,10 @@ dependencies {
     testImplementation("org.junit.jupiter", "junit-jupiter-api", version("junit"))
     testImplementation("org.junit.jupiter", "junit-jupiter-params", version("junit"))
     testRuntimeOnly("org.junit.jupiter", "junit-jupiter-engine", version("junit"))
+}
+
+brahmagen {
+    output = "${buildDir}/components"
 }
 
 tasks.wrapper {

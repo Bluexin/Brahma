@@ -20,24 +20,47 @@
 package be.bluexin.brahma.sync;
 
 import be.bluexin.brahma.SerializedComponent;
-import com.artemis.annotations.PooledWeaver;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-@PooledWeaver
-public class TestJavaComponent extends SerializedComponent {
-    public String message = null;
+public final class TestJavaComponent extends SerializedComponent {
+    private String message = null;
+    private int truth = 0;
+
+    @Override
+    protected void reset() {
+        this.setMessage(null);
+        this.truth = 0;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int getTruth() {
+        return truth;
+    }
+
+    public void setTruth(int truth) {
+        this.truth = truth;
+    }
 
     @Override
     public void serializeTo(@NotNull DataOutput outputStream) throws IOException {
-        outputStream.writeUTF(message);
+        outputStream.writeUTF(this.getMessage());
+        outputStream.writeInt(this.getTruth());
     }
 
     @Override
     public void deserializeFrom(@NotNull DataInput inputStream) throws IOException {
-        message = inputStream.readUTF();
+        this.setMessage(inputStream.readUTF());
+        this.setTruth(inputStream.readInt());
     }
 }

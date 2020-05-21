@@ -19,7 +19,7 @@
 
 package be.bluexin.brahma
 
-import com.artemis.Component
+import com.artemis.PooledComponent
 import com.artemis.annotations.Transient
 import java.io.DataInput
 import java.io.DataOutput
@@ -27,7 +27,7 @@ import java.io.IOException
 
 // TODO: delta updates
 @Transient
-abstract class SerializedComponent : Component() {
+abstract class SerializedComponent : PooledComponent() {
     fun clean() {
         dirty = false
     }

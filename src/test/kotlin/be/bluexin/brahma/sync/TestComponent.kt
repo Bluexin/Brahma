@@ -33,4 +33,8 @@ data class TestComponent(var message: String) : SerializedComponent() {
     override fun deserializeFrom(inputStream: DataInput) {
         message = inputStream.readUTF()
     }
+
+    override fun reset() {
+        message = ""
+    }
 }

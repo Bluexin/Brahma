@@ -6,7 +6,13 @@ includeBuild("kaeron") {
     }
 }
 
+includeBuild("brahma-generator")
+
 pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+
     val kotlin_version: String by settings
     resolutionStrategy {
         eachPlugin {

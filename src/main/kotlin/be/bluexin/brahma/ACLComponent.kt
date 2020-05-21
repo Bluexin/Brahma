@@ -53,4 +53,8 @@ data class ACLComponent(private var currentAcl: Int2IntMap = Int2IntMaps.EMPTY_M
             currentAcl.put(inputStream.readInt(), inputStream.readInt())
         }
     }
+
+    override fun reset() {
+        currentAcl.clear()
+    }
 }

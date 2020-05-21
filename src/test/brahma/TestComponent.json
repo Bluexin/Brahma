@@ -1,0 +1,21 @@
+{
+  "package": "be.bluexin.brahma.components",
+  "name": "TestComponent",
+  "fields": [
+    {
+      "name": "message",
+      "type": "string"
+    },
+    {
+      "name": "truth",
+      "type": "int",
+      "defaultValue": "42"
+    },
+    {
+      "name": "transientTruth",
+      "type": "int",
+      "defaultValue": "42",
+      "transient": true
+    }
+  ]
+}
