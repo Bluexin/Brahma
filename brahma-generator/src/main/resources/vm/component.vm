@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Brahma-generator.  If not, see <https://www.gnu.org/licenses/>.
  *###
-## @vtlvariable name="resolver" type="java.util.Map<java.lang.String, be.bluexin.brahma.generator.FieldType>"
+## @vtlvariable name="resolver" type="java.util.Map<java.lang.String, be.bluexin.brahma.generator.types.FieldType>"
 ## @vtlvariable name="component" type="be.bluexin.brahma.generator.data.Component"
 ## @vtlvariable name="imports" type="java.lang.String[]"
 #macro(nullability $field $fieldInfo)

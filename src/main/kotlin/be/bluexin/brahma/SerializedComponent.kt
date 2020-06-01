@@ -26,6 +26,7 @@ import java.io.DataOutput
 import java.io.IOException
 
 // TODO: delta updates
+// TODO: migrate to https://google.github.io/flatbuffers/ ?
 @Transient
 abstract class SerializedComponent : PooledComponent() {
     fun clean() {

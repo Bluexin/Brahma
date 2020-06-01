@@ -19,7 +19,7 @@
 
 @file:Suppress("unused")
 
-package be.bluexin.brahma.generator
+package be.bluexin.brahma.generator.types
 
 import be.bluexin.brahma.generator.data.Field
 import java.util.*
@@ -93,19 +93,4 @@ object StringType : FieldType() {
 
     override fun deserialize(field: Field, streamName: String) =
         "this.${field.name} = ${streamName}.readUTF()"
-}
-
-object IntType : FieldType() {
-    override val key = "int"
-    override val useNullability = false
-    override val typeDef = "int"
-
-    override fun default(field: Field) =
-        if (field.defaultValue != null) "${field.defaultValue}" else "0"
-
-    override fun serialize(field: Field, streamName: String) =
-        "${streamName}.writeInt(this.${field.name})"
-
-    override fun deserialize(field: Field, streamName: String) =
-        "this.${field.name} = ${streamName}.readInt()"
 }

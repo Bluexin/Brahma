@@ -20,6 +20,7 @@
 package be.bluexin.brahma.generator
 
 import be.bluexin.brahma.generator.data.Component
+import be.bluexin.brahma.generator.types.*
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.apache.velocity.VelocityContext
@@ -71,6 +72,11 @@ open class GenerateBrahmaTask : DefaultTask() {
     private val globalContext by lazy {
         StringType
         IntType
+        DoubleType
+        FloatType
+        ByteType
+        BooleanType
+        LongType
         VelocityContext(
             mapOf(
                 "resolver" to typeMap
